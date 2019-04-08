@@ -1,5 +1,5 @@
 ---
-title: "Week 3 - Daily R Nuggets"
+title: "Daily R Nuggets 1-5"
 author: "Emma L"
 date: 'Date created: `r Sys.Date()`'
 output:
@@ -12,7 +12,6 @@ output:
   html_document:
     df_print: paged
 ---
-
 ```{r, message = FALSE}
 library(nycflights13) ; library(tidyverse)
 ```
