@@ -1,0 +1,53 @@
+---
+title: "Daily Nuggets 4"
+author: Emma 
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+
+##Day 4
+1. Use a ggplot chart(s) (of your choice) to show the carriers that made up the most of amount of time in terms of departure delays. Say a flight is departs 10 minutes late but lands only 2 minutes late then `timeMadeUp`  = 8, similarly if a flight that departs 20 minutes late but lands say 10 minutes early, then `timeMadeUp` = 30. (Only look at flights that were delayed for this, we are not interested in flights that departed early or on time.)
+```{r}
+flights %>% 
+  filter(dep_delay > 0) %>% 
+  mutate(timeMadeUp = dep_delay - arr_delay, na.rm = T) %>%
+  group_by(carrier) %>% 
+  summarise(timeMadeUp = mean(timeMadeUp, na.rm = T)) %>%
+ 
+  ggplot(aes(x = carrier, y = timeMadeUp)) +
+  geom_col()
+
+```
+
+
+2. Use a ggplot chart(s) (of your choice) to show the relationship between flight distance and arrival delay. (The flight distances are about the same for every flight, so you could consider using it as a group to summarise the data)
+```{r}
+flights %>% 
+  
+  ggplot(mapping = aes(x = distance, y = arr_delay, na.rm = T, colour = distance)) +
+  geom_smooth(na.rm = T) +
+  labs(
+    x = "Flight Distance (in Miles)" ,
+    y = "Arrival Delay (in Minutes)" ,
+    title = "Short flights equal long delays"
+  )
+  theme_classic() 
+```
+
+
+##Day 5
+1. Look at the documentation of `facet_grid()` and create a histogram for departure delay each combination of origin and carrier.
+```{r}
+flights %>%
+ggplot(mapping=aes(dep_delay , na.rm = T))+
+ geom_histogram(bins=5, colour = "blue", fill = "blue") +
+ facet_grid(rows=vars(carrier),cols= vars(origin), scales="free", space="free") +
+  theme_gray()
+```
+

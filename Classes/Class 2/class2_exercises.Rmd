@@ -1,0 +1,90 @@
+---
+title: "Class 2 - In class exercises"
+author: Emma
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+**Instructions**: Give your answers below each numbered task
+
+##Class 1 Recap
+1. If you haven't done so already, please register your attendance. You can find the link to the attendance sheet on the class2 channel on slack.
+2. Change the name of the author in the YAML part (the top of the notebook) to your name
+3. Create atomic vectors of type character, integer and logical. Call them anything you like, they can be of any length.
+4. Use `typeof()` to confirm the type of data held by the three atomic vectors you created.
+5. Use `length()` command to find the lengths of each vector
+
+##breakout
+6. Find and read the help pages for the colon shorthand `:`. You can either search for it using the Help tab on the bottom right pane or using the command `?colon`. Ignore the part about the factors.
+
+
+7. Replicate the examples at the bottom of the help page i.e. copy paste and run them in a chunk. Ignore the examples for factors (the ones that use the `gl()` command).
+
+
+8. Explain in a couple of short sentences why `c("one", 1)` yields the atomic vector `["one", "1"]`.
+
+##Arrange a table
+1. Install and load the `nycflights13` package (and the `tidyverse` package if you did not complete that to-do)
+2. Arrange the flights data in descending order of dates (the last day of the year should be the first row of the data). You just have to print this, no need to save it to a new variable. Use the tidyverse portal and/or google to find the answer (if you don't know it already).
+
+```{r}
+library(tidyverse); library(nycflights13)
+
+flights %>%
+  arrange(desc(month), desc(day))
+
+```
+
+
+##Select columns
+1. Use the documentation for `select()` on the tidyverse portal to find a way to create a new tibble that contains the first three columns (year, month, day) and all other columns whose names `contains()` the term "delay"
+```{r}
+flights%>%
+  select(1,4,6)
+```
+
+```{r}
+flights%>%
+  select (-4)
+```
+
+```{r}
+flights %>%
+  select(year, month,day, contains("delay")) 
+
+```
+
+2. Look at the documentation for `pull()`. Pull the column dep_delay from the flights data. Compare the output from this when you `select()` the column dep_delay. Hint use `str()` or `glimpse()` to see its data structure.
+```{r}
+flights
+```
+
+
+```{r}
+flights %>%
+  pull(dep_delay)
+
+```
+
+
+##Filter rows
+1. Select the first three columns (year, month, day), all other columns whose names `contains()` the term "delay" and the origin column. Filter this data to show only the month of December. Assign this new tibble to a variable. Make sure to use pipes between the select and filter command. Refer to the shortcut for inserting a pipe.
+
+
+2. Filter the tibble you create in step 1 to show only those flights that took from "JFK" that took off in the AM.
+3. Use `top_n()` to find the most delayed departures from NYC in 2013. No need to save this. Just print out.
+4. Fix this code
+```{r}
+flights %>% 
+    filter(month = 6 & day > 15)
+```
+
+##Mutate a tibble
+1. Create a variable that indicates whether a flight took off in the AM or the PM.
+2. Use `transmute()` instead of `mutate()` to do the same. What is the difference between the two?
+

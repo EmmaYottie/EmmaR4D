@@ -1,0 +1,68 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse) ; library(nycflights13)
+```
+
+```{r}
+library(lubridate)
+```
+
+##1. Select the first three columns (year, month, day), all other columns whose names `contains()` the term "delay" and the origin column. Filter this data to show all the flights that took off in the morning (before 12:00) from JFK in December. Make sure to use pipes between the select and filter command. Refer to the shortcut for inserting a pipe (see above).
+```{r}
+flights %>%
+  select(1:3, contains("dep"), origin)%>%
+  filter(dep_time < 1200 & origin == "JFK" & month == 12)
+```
+##2. Use `top_n()` to print the most delayed departures from NYC in 2013. Read the documentation for `top_n()` on tidyverse if you are confused.
+
+```{r}
+flights %>%
+  top_n(., n=5, wt = dep_delay)
+```
+
+##1. Create a variable that indicates whether a flight took off in the AM or the PM.
+
+```{r}
+paste("R4D", "class" , "is" , "awesome" , sep = "-")
+```
+```{r}
+flightsWeek <- flights %>%
+  mutate(amFlight = if_else(sched_dep_time < 1200 , "morning" , "evening"))
+```
+
+
+##2. Use `transmute()` instead of `mutate()` to do the same. What is the difference between the two?
+
+```{r}
+flights %>%
+  transmute(amFlight = if_else(sched_dep_time < 1200, "morning" , "evening"))
+```
+
+
+
+
+##Grouped operations (Task time 30 mins)
+##1. Find the top 10 airline carrier that had the highest average departure delays in 2013 using `group_by()`, `summarise()` and other functions you have learnt previously.
+
+```{r}
+flights %>%
+  group_by(origin) %>%
+  summarise((avgDelay = mean(dep_delay, na.rm = T)))
+```
+
+```{r}
+flights %>%
+  group_by(origin) %>%
+  summarise((avgDelay = mean(dep_delay, na.rm = T)))
+```
+
+
+##2. Use `group_by()` with `mutate()` to create a new variable called `comparativeDelay` which is the difference between departure delay and the average delay in each origin airport for every hour in 2013 (checkout the `time_hour` variable in the flights data). Store the result in a variable called `comparativeDelays`.
+##3. Now group the `comparativeDelays` tibble by carriers to print the top 10 airlines with the greatest average comparative delays.
+##4. Use `group_by()` with filter to print the 5 most delayed flights from each origin. Your printed tibble should have 15 rows.
+5. The air authority in NY wants to penalize carriers for departure delays. Which of the three metrics (task 1, 3 or 4) would you recommend they use to identify the airlines to penalize. Why?
+
+
