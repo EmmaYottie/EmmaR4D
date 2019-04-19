@@ -1,0 +1,259 @@
+---
+title: "Class 3 - Lecture"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+css: /Users/hsubhash/Documents/R4D/Assets/custom.css
+---
+
+##Learning Objectives
+1. ~~Host your notebook online using github~~
+2. ~~Filter rows from tabular data~~
+3. ~~Mutate tabular data~~
+4. ~~Master grouping~~
+5. Introduce ggplot2 for data visualizations
+
+```{r, message=FALSE, warning=FALSE}
+library(nycflights13); library(tidyverse)
+```
+
+
+##Filter rows (recap)
+0. Get the unique list of carriers from flights
+```{r}
+unique(flights$carrier)
+```
+Getting unique/distinct values using tidyverse functions
+```{r}
+flights %>% 
+    distinct(carrier) %>% 
+    pull()
+```
+
+
+1. Filter out the flights that belong to the following carriers: UA, AA and DL
+```{r}
+flights %>% 
+    filter(carrier == "UA" | carrier == "AA" | carrier == "DL" | carrier == "B6")
+```
+2. Use `%in%` to filter out the flights that belong to the following carriers: UA, AA and DL
+```{r}
+carriersToFilter <- c("UA", "AA", "DL", "B6")
+
+flights %>% 
+    filter(carrier %in% carriersToFilter) ## quasiqoutation / tidy evaluation
+```
+
+```{r}
+flights
+```
+
+
+Sample for %in%.
+```{r}
+matchValue <- c(1, 2, 4, 5)
+testVect <- 1:15
+
+matchValue %in% testVect
+```
+
+
+3. Filter out the flight that suffered the highest departure delay in 2013.
+```{r}
+flights %>% 
+    filter(dep_delay == max(dep_delay, na.rm = T))
+```
+
+Show missing dep delay values
+```{r}
+flights %>% 
+    filter(is.na(dep_delay))
+```
+
+
+The reason for using na.rm = T
+```{r}
+testVector <- c(1, 2, 3, NA)
+
+sum(testVector, na.rm = T)
+```
+4. Filter out the 50th most delayed flight that flew out from JFK in 2013 (using top_n() or arrange() + slice() and dense_rank())
+Lets use top_n() first.
+```{r}
+flights %>% 
+    top_n(., n = 50, wt = dep_delay) %>% 
+    arrange(desc(dep_delay)) %>% 
+    slice(50)
+```
+
+```{r}
+flights %>% 
+    filter(dense_rank(desc(dep_delay)) == 50)
+```
+5. Filter departure delays that are between one to two hours (show with and without helper)
+```{r}
+flights %>% 
+    filter(dep_delay >= 60 & dep_delay <= 120)
+```
+
+```{r}
+flights %>% 
+    filter(between(x = dep_delay, left = 60, right = 120))
+```
+
+
+##Mutate
+A simple trivial mutate.
+```{r}
+flights %>% 
+    select(1:4) %>% 
+    mutate(newDepTime = dep_time + 1200)
+```
+
+
+1. Use the lubridate package to create a new date variable and arrange it in descending order.
+
+Introducing the paste function. It can paste together individual arguments like below,
+```{r}
+paste("R4D", "class", "is awesome", sep = "-")
+```
+
+or paste together elements in a vector. Notice that I have used `sep` as an argument in the first instance and `collapse` in the second.
+```{r}
+messageToCollapse <- c("R4D", "class", "is awesome")
+paste(messageToCollapse, collapse = "-")
+
+```
+
+Now lets create new date variable using the `ymd()` function in the lubridate package.
+```{r}
+library(lubridate)
+
+flights %>% 
+    select(1:3) %>% 
+    mutate(nycDates = ymd(paste(year, month, day, sep = "-")))
+```
+
+
+2. Use `if_else()` syntax to create a variable that indicates whether a flight was delayed.
+
+```{r}
+flights %>% 
+    select(1:3, dep_delay) %>% 
+    mutate(flightIsDelayed = if_else(dep_delay > 0, "Flight is delayed", "Flight is early or on time"))
+```
+
+
+##Grouping
+
+1. Group and summarise
+Example for grouping
+
+```{r}
+flights %>% 
+    group_by(origin) %>% 
+    summarise(avgDelay = mean(dep_delay, na.rm = T))
+```
+
+```{r}
+flights %>% 
+    group_by(carrier) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T))
+```
+
+If you wanted to wanted see the groups along with other characteristics of a tibble use `glimpse()`
+```{r}
+flights %>%
+    group_by(origin, carrier) %>% 
+    glimpse()
+```
+
+
+```{r}
+flights %>% 
+    group_by(carrier)
+```
+
+Lets look at summarise without groups
+
+```{r}
+flights %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T))
+```
+
+Lets summarise with two groups
+```{r}
+flights %>% 
+    group_by(carrier, origin) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T))
+```
+
+
+
+
+2. Counteracting data outliers in summary stats
+Always look at the number of observations that a summary stat is based on.
+```{r}
+flights %>% 
+    group_by(carrier, origin) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T),
+              nObs = n()) %>% 
+    arrange(nObs)
+```
+
+Add a few more summary functions to summarise()
+```{r}
+flights %>% 
+    group_by(carrier, origin) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T),
+              nObs = n(),
+              maxDelay = max(dep_delay, na.rm = T),
+              minDelay = min(dep_delay, na.rm = T),
+              sd = sd(dep_delay, na.rm = T))
+```
+
+
+2. Group and mutate
+
+```{r}
+flights %>% 
+    group_by(origin) %>% 
+    mutate(meanDelay = mean(dep_delay, na.rm = T),
+        comparativeDepDelay = dep_delay - meanDelay) %>% 
+    select(1:3, origin,dep_delay, meanDelay, comparativeDepDelay)
+```
+
+3. Group and filter
+```{r}
+flights %>% 
+    group_by(origin) %>% 
+    filter(dep_delay == max(dep_delay, na.rm = T)) %>% 
+    select(1:3, origin, dep_delay)
+```
+
+```{r}
+flights %>% 
+    filter(dep_delay == max(dep_delay, na.rm = T)) %>% 
+    select(1:3, origin, dep_delay)
+```
+
+
+##A ggplot taster
+1. Draw an exploratory chart
+2. Explain the underlying concepts: data, aethetics, geoms and scales
+
+
+```{r}
+source("../helpers.R")
+
+pickRandom()
+```
+
+
+

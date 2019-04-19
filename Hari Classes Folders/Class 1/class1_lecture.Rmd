@@ -1,0 +1,173 @@
+---
+title: "Class 1 - Lecture"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+css: /Users/hsubhash/Documents/R4D/Assets/custom.css
+---
+##Keyboard shortcuts
+1. Assignment operator is `Alt + -` for Windows and `Option + -` for Mac
+2. Create a new code chunk `Ctrl+Alt+I` for Windows and `Command+Option+I` for Mac
+3. Run a line `Ctrl + Enter` for Windows and `Command + Enter` for Mac
+
+##Variable Assignment
+1. Assign a value to a variable.
+```{r}
+myFirstVar <- "Hello World!"
+```
+
+2. Reassign a new value to the same variable.
+```{r}
+myFirstVar <- "R4D"
+
+myFirstVar <- "Hello World"
+```
+
+
+3. Assign a new variable the value of the old variable
+```{r}
+mySecondVar <- myFirstVar
+```
+
+4. What happens when we change the new variable does the old change as well?
+```{r}
+mySecondVar <- "Not hello"
+```
+
+
+##Data Structures
+
+###Atomic vectors
+1. Create atomic vectors of different types
+`c()` is short for combine
+```{r}
+petNames <- c("Tommy", "Singha", "Chacko")
+petAge <- c(4, 5, 14)
+male <- c(TRUE, FALSE, FALSE)
+```
+
+
+2. Determine their type using `typeof()`
+
+```{r}
+typeof(petNames)
+typeof(petAge)
+typeof(male)
+```
+
+3. Create vectors using `seq()`, `paste()` and the `:` shorthand
+
+
+```{r}
+##Create a sequence of even numbers from 2 to 40
+evenSeq <- seq(from = 2, to = 40, by = 2)
+
+##Lets paste a few words together
+pasteChars <- paste("Hi!", "welcome", "to", "the course")
+
+hiPets <- paste("Hi", petNames)
+
+```
+4. What happens when you combine different data types?
+Coercion heirarchy: logical, integer, double, character
+```{r}
+c("Hi", 1, "one")
+```
+
+```{r}
+c(1.0, 3.4, 5L)
+```
+
+```{r}
+c(TRUE, FALSE, "TRUE")
+```
+
+```{r}
+c(T, F, 1)
+```
+
+###Lists
+1. Create a list
+
+```{r}
+testList <- list(hiPets, petAge, petNames, evenSeq)
+
+testList
+```
+
+```{r}
+listWithinList <- list(testList, classFirstVar)
+
+listWithinList
+```
+
+
+2. Create a named list and access its names using `names()`
+
+```{r}
+namedList <- list(petNames = petNames, petAge = petAge)
+
+namedList
+```
+
+###Data Frame
+1. Create a data frame
+```{r}
+pets <- data.frame(petNames, age = petAge, male)
+
+pets
+```
+
+
+2. Find the `ncol()`, `nrow()` and `length()` of the data frame
+```{r}
+ncol(pets)
+nrow(pets)
+length(pets)
+```
+
+```{r}
+is.list(pets)
+```
+
+<!-- ##Subsetting data structures -->
+
+<!-- ###Atomic vectors -->
+<!-- 1. Subset using positive integers, negative integers, and logical vectors -->
+
+<!-- ###Lists -->
+<!-- 1. Try the same as atomic vectors -->
+
+<!-- ###Data frames -->
+<!-- 1. Filter rows -->
+<!-- 2. Select columns -->
+<!-- 3. Select columns using named column ranges -->
+<!-- 4. Subset columns and rows -->
+
+
+
+<!-- ###The other two subsetting operators -->
+<!-- 1. Show the difference between `[]` and `[[]]` or `$` -->
+<!-- 2. Use `[[]]` to subset atomic vectors, lists and data frames -->
+
+<!-- ####**Break for Task** -->
+<!-- 1. From the sequence of odd numbers created in the previous set of tasks remove all the multiples of 5 (use `seq()`) to create all the multiples of 5 under 100) -->
+<!-- 2. Remove the last row from the data frame you created previously -->
+<!-- 3. Select the last 2 columns in the data frame you created -->
+<!-- 4. Use `[]`, `[[]]` and `$` to select the second item in the list that you created -->
+<!-- 5. Use `identical()` to check if the two items created through `[[]]` and `$` are identical -->
+
+
+<!-- ##Advanced subsetting -->
+
+<!-- ###Operators -->
+<!-- 1. Arithmetic operations -->
+<!-- 2. Relational -->
+<!-- 3. Logical -->
+

@@ -1,0 +1,129 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+##List the 4 most common (data) types of atomic vectors.
+##Answer: 
+
+##2.Create atomic vectors of the 4 common types covered in class. Print their length and type.
+
+
+##3. List the heirarchy of data types for coercion
+##Answer:
+
+##4. Explain why the output of following bits of code is TRUE (explain what is happening in terms of coercion):
+```{r}
+flights %>%
+  top_n(., n=5, wt = dep_delay)
+```
+##1.Load the tidyverse and nycflights13 packages.
+```{r, message=FALSE}
+library(nycflights13) ; library(tidyverse)
+```
+
+##.2 Describe two ways in which you can use RStudio confirm that a package has been loaded into your current R session? (Hint: One of them is a dropdown menu and the other a list of checkboxes)
+```{r}
+
+```
+
+##Answer: You can check the console, where it states that [Workplace loaded from ~?.RData], and 
+
+##3.Use the distinct() command to identify the unique combinations of airline carriers and origin airports in the flights data.
+```{r}
+flights %>%
+  distinct(.,carrier, origin, keep_all=TRUE)
+```
+
+```{r}
+unique(flights$carrier)
+```
+
+
+Use the one_of() helper function to select the following columns - year, month, day, dep_time, sched_dep_time, dep_delay, arr_time, from the flights data.
+
+```{r}
+
+```
+
+
+##Use the slice() function to slice the first 10 rows in the flights data.
+
+```{r}
+
+```
+
+
+##Perform the same operation as the previous task but this time use filter(). (Hint: Search for how to get the row numbers of a tibble)
+
+
+##Use the top_n() command to identify the top 5 flights out of NYC that experienced the greatest arrival delays in 2013.
+
+```{r}
+flights %>% 
+  top_n(., n = 5, wt = arr_delay) %>% 
+  arrange(desc(arr_delay))
+
+```
+
+
+##Use top_n() along with arrange() and slice() to pull out the 50th most delayed departure from NYC in 2013 (Not all 50, just the 50th).
+
+```{r}
+flights %>% 
+  top_n(., n = 50, wt = dep_delay) %>% 
+  arrange(desc(dep_delay)) %>% 
+  slice(50)
+```
+
+
+##Do the same thing as the previous task using
+row_number()
+and dense_rank()
+
+```{r}
+flights %>% 
+ filter(row_number(desc(dep_delay)) == 50)
+
+```
+
+```{r}
+flights %>% 
+filter(dense_rank(desc(dep_delay)) == 50)
+```
+
+
+##The result from row_number() and top_n() are the same, while that from dense_rank() is different. Why?
+
+
+
+Answer:
+##Find the top 10 airline carrier that had the highest average departure delays in 2013 using group_by(), summarise() and other functions you have learnt previously.
+```{r}
+flights %>% 
+  group_by(carrier) %>% 
+  summarise(mean(dep_delay), keep_all )
+```
+
+##Use group_by() with mutate() to create a new variable called comparativeDelay which is the difference between departure delay and the average delay in each origin airport for every hour in 2013 (checkout the time_hour variable in the flights data). Store the result in a variable called comparativeDelays.
+
+```{r}
+flights %>% 
+  group_by(origin) %>% 
+  mutate(., x = origin , y =  ) %>% 
+  varName <- comparativeDelay
+
+```
+
+
+##Now group the comparativeDelays tibble by carriers to print the top 10 airlines with the greatest average comparative delays.
+
+
+
+##Use group_by() with filter to print the 5 most delayed flights from each origin. Your printed tibble should have 15 rows.
+
+
+
+##The air authority in NY wants to penalize carriers for departure delays. Which of the three metrics (task 1, 3 or 4) would you recommend they use to identify the airlines to penalize. Why?
+
+Answer:

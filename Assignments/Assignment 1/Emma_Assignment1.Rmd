@@ -1,0 +1,273 @@
+---
+title: "Assignment 1"
+author: Emma
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+editor_options: 
+  chunk_output_type: inline
+---
+
+**Due Date**: Sunday, March 24th
+
+**Keyboard Shortcuts**:
+
+1. Assignment operator (<-) is `Alt+-` for Windows and `Option+-` for Mac
+2. Insert new code chunk `Ctrl+Alt+I` for Windows and `Command+Option+I` for Mac
+3. Run a line of code `Ctrl+Enter` for Windows and `Command+Enter` for Mac
+4. Run all the code within a chunk `Ctrl+Shift+Enter` for Windows and `Command+Shift+Enter` for Mac
+5. Insert a pipe operator (%>%) `Ctrl+Shift+M` for Windows and `Command+Shift+M` for Mac
+```{r}
+library(tidyverse) ; 
+
+```
+
+
+**General Instructions**
+
+1. Use the cheatsheets and the keyboard shortcuts as you work through the assignment.
+2. Each task should be answered right below the question.
+3. The assignment should be submitted via a shareable github link on the assignments channel in Slack.
+4. Make sure the notebook is neatly formatted and looks good when you preview it.
+
+##Task set 1: Data types and structures
+1. List the 4 most common (data) types of atomic vectors.
+    + Answer: Integer, double, character, logical
+
+2. Create atomic vectors of the 4 common types covered in class. Print their length and type.
+
+```{r}
+
+bookGenre <- c("mystery" , "novel" , "sciFiFantasy" , "history")
+chapters <- c(24, 12, 48, 32)
+fiction <- c(F, F, F, T)
+DeweyDecimal <- c(4.1, 7.2, 3.9, 9.8)
+
+typeof(bookGenre)
+typeof(chapters)
+typeof(fiction)
+typeof(DeweyDecimal)
+
+length(bookGenre)
+length(chapters)
+length(fiction)
+length(DeweyDecimal)
+  
+```
+
+3. List the heirarchy of data types for coercion
+    +Answer:Logical
+            Integer
+            Numeric
+            Character
+
+4. Explain why the output of following bits of code is TRUE (explain what is happening in terms of coercion): 
+
+```{r}
+"1" == 1
+```
+Answer: The quotations in the command are turning what would be an integer by default (because an integer is higher on the hierarchy than a character) into a character. At the same time it is saying both are the same value.
+
+
+
+```{r}
+FALSE == 0
+```
+Answer: R implicitly converts FALSE to 0 and TRUE to 1, which I am guessing helps in the statistical analysis part wherein a particular variable is binary.
+
+3. Create a list that holds the 4 common types of atomic vectors you created in task 2.
+
+```{r}
+bookWorm <- list(bookGenre , chapters , fiction , DeweyDecimal)
+```
+
+```{r}
+data_frame(bookGenre , bookChapters , bookFiction, DeweyDecimal)
+```
+
+
+4. Create a data frame with 3 columns and 5 rows using the `data.frame()` function
+
+```{r}
+Xports <-list(countriesOfOps, majorExports, annualSales)
+```
+
+
+```{r}
+countriesOfOps <- c("Angola" , "Burundi" , "Cameroon" , "Djibouti" , "Ethiopia")
+majorExports <- c("oil" , "tea", "cocao" , "charcoal", "coffee")
+annualSales <- c(268 , 25.7 , 429 , 4.7, 713)
+```
+
+```{r}
+dframeXports <- data_frame(countriesOfOps, majorExports, annualSales)
+dframeXports
+```
+
+
+5. Create the same data frame as above using `tibble()` function
+
+```{r}
+tblXports <- tibble(countriesOfOps, majorExports, annualSales)
+tblXports
+```
+
+6. Use the `str()`, `class()` and or `glimpse()` command to see the difference between the dataframe and tibble create in 4 and 5.
+
+```{r}
+str(dframeXports)
+str(tblXports)
+```
+
+```{r}
+glimpse(dframeXports)
+glimpse(tblXports)
+```
+
+```{r}
+class(dframeXports)
+class(tblXports)
+```
+
+
+7. Fill in the blanks. 
+
+    + A data frame is a 2 dimensionsional data structure in R that consists of rows and columns of varying length
+
+8. What is the difference between an atomic vector and a list?
+    + Answer: An atomic vector is like a list in which all variables are of the same type (EG integer, character...). A list can contain multiple types of variables (and/or other lists). 
+
+
+##Task set 2: Data manipulation using dplyr
+
+**INSTRUCTIONS**: You will be using the tidyverse and nycflights13 packages for the next set of tasks. Refer to the documentation on tidyverse.org or use the help pages if you do not understand a function fully.
+
+1. Load the tidyverse and nycflights13 packages.
+
+```{r}
+library(nycflights13) ; library(tidyverse)
+```
+
+2. Describe two ways in which you can use RStudio confirm that a package has been loaded into your current R session? (Hint: One of them is a dropdown menu and the other a list of checkboxes)
+
+    + Answer: 1) Check the 'Packages' tab to see if the box for that Package is ticked, or 2) go to "View", "show packages" ^7, or check your Global Environment to see if that Data is there.
+
+3. Use the `distinct()` command to identify the unique combinations of airline carriers and origin airports in the flights data.
+
+```{r}
+flights %>% 
+  distinct(carrier, origin)
+```
+
+4. Use the `one_of()` helper function to select the following columns -  year, month, day, dep_time, sched_dep_time, dep_delay, arr_time, from the flights data.
+
+```{r, message=FALSE}
+
+flights %>% 
+  select(one_of( c("year" , "month" , "day" , "dep_time" , "sched_dep_time" , "dep_delay" , "arr_time")))
+
+```
+
+5. Use the `slice()` function to slice the first 10 rows in the flights data.
+
+```{r}
+flights %>% 
+  slice(1:10)
+```
+
+6. Perform the same operation as the previous task but this time use `filter()`. (Hint: Search for how to get the row numbers of a tibble)
+
+```{r}
+flights %>% 
+
+  Filter(1:10)
+
+
+
+```
+
+7. Use the `top_n()` command to identify the top 5 flights out of NYC that experienced the greatest arrival delays in 2013.
+
+```{r}
+flights %>% 
+  group_by(origin = "NYC") %>% 
+  arrange(desc(dep_delay)) %>% 
+  top_n(5)
+
+```
+
+8. Use `top_n()` along with `arrange()` and `slice()` to pull out the 50th most delayed departure from NYC in 2013 (Not all 50, just the 50th). 
+```{r}
+
+```
+
+9. Do the same thing as the previous task using 
+    + `row_number()`
+    + and `dense_rank()`
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+10. The result from `row_number()` and `top_n()` are the same, while that from `dense_rank()` is different. Why?
+
+    + Answer:
+
+11. Find the top 10 airline carrier that had the highest average departure delays in 2013 using `group_by()`, `summarise()` and other functions you have learnt previously.
+```{r}
+
+```
+
+12. Use `group_by()` with `mutate()` to create a new variable called `comparativeDelay` which is the difference between departure delay and the average delay in each origin airport for every hour in 2013 (checkout the `time_hour` variable in the flights data). Store the result in a variable called `comparativeDelays`.
+```{r}
+
+```
+
+13. Now group the `comparativeDelays` tibble by carriers to print the top 10 airlines with the greatest average comparative delays.
+```{r}
+
+```
+
+14. Use `group_by()` with filter to print the 5 most delayed flights from each origin. Your printed tibble should have 15 rows.
+```{r}
+
+```
+
+15. The air authority in NY wants to penalize carriers for departure delays. Which of the three metrics (task 1, 3 or 4) would you recommend they use to identify the airlines to penalize. Why?
+
+    + Answer:
+    
+##Task set 3: R markdown
+
+1. Modify the text below as per the prompt
+    + Underline me
+    + Make me bold
+    + Make me a block quote
+    + Make me italic
+    + Strike through me
+
+2. Create a level three header called "My level 3 header" under this line 
+
+3. Modify the content below so that the bullet points (unordered list) render correctly
+
+**Messy bullet points**
+* one
+* two
+* three
+
+4. Use chunk options to hide the output and the code from the chunk below in the previewed notebook.
+
+```{r, results='hide', echo=FALSE}
+print("Hide me and the code that created me")
+```
+
+

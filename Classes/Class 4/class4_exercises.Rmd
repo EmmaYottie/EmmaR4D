@@ -1,0 +1,53 @@
+---
+title: "Class 4 - In class exercises"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+
+**CHEATSHEETS**
+
+1. [Data visualization](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf)
+2. [Data Manipulation](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
+
+**KEYBOARD SHORTCUTS**:
+
+1. Assignment operator (<-) is `Alt+-` for Windows and `Option+-` for Mac
+2. Insert new code chunk `Ctrl+Alt+I` for Windows and `Command+Option+I` for Mac
+3. Run a line of code `Ctrl+Enter` for Windows and `Command+Enter` for Mac
+4. Run all the code within a chunk `Ctrl+Shift+Enter` for Windows and `Command+Shift+Enter` for Mac
+5. Insert a pipe operator (%>%) `Ctrl+Shift+M` for Windows and `Command+Shift+M` for Mac
+
+##Task Set 1: Recap + Factors
+1. Filter all departure delays that were between 10 and 20 minutes from LGA in 2013
+2. Use `group_by()` and `filter()` to find the flights that had the greatest delay for each month in 2013.
+3. Write two lines on why it is important to ungroup a grouped dataset (once your are done with the grouping operations).
+4. Look at the documentation for `weekdays()`. Use it on the `time_hour` column inside a `mutate()` to create a new column called `dayName` that records the day of the week that a flight took off. Save this new dataset as `flightsWeek`.
+```{r}
+library(tidyverse); library(nycflights13)
+flightsWeek <- flights %>% 
+    mutate(dayName = weekdays(time_hour))
+```
+5. Convert this into a factor variable called `fctDayNames` using `factor(flightsWeek$dayName)`. Display it using `table(fctDayNames)`.
+```{r}
+fctDayNames <- factor(flightsWeek$dayName)
+
+table(fctDayNames)
+```
+
+6. ~~Use `levels()` on `fctDayNames` to order the levels of the factors to the following order: c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"). Show the output using `table(fctDayNames)`~~ INCORRECT USE OF LEVELS FUNCTION.
+7. Now combine the previous two steps in a `factor()` function by setting the value of the levels argument within it, also set the labels argument to c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"). Save this as `cleanFctDayNames` See `?factor`. Show output using `table(cleanFctDayNames)`. Observe the differences in output between 5, 6 and 7.
+
+```{r}
+cleanFctDayNames <- factor(flightsWeek$dayName, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"), labels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))
+
+table(cleanFctDayNames)
+```
+
+

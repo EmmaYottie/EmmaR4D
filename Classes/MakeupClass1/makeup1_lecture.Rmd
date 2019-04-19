@@ -1,0 +1,374 @@
+---
+title: "Make up class 1 - Lecture"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+css: /Users/hsubhash/Documents/R4D/Assets/custom.css
+---
+##Learning objectives
+1. ~~Master the basics of variable assignment~~
+2. ~~Familiarize with RStudio, notebooks, markdown and YAML~~
+3. ~~Understand data structures and types in R~~
+4. ~~Create atomic vectors, identify data types and rules of coercion~~
+5. ~~Create lists and data frames~~
+6. ~~Understand the package system in R~~
+7. ~~Install and load packages in R~~
+8. ~~Comprehend the basics of the tidyverse (the pipe, tibble, basic principles)~~
+9. ~~Arrange a tibble based on column values~~
+10. ~~Select columns from a tibble~~
+11. ~~Create new columns in a tibble~~
+12. ~~Filter rows from a data frame~~
+13. Master grouping
+14. Create an online notebook via GitHub
+
+
+##Some R markdown practice
+
+##Here is a test heading
+**bold text**
+
+*italic*
+
+Unordered list (remember to enter a new empty line if the line right above an list is not a heading)
+
+* list item 1
+* list item 2
+* list item 3
+
+ordered list
+
+1. item 1
+2. item 2
+3. item 3
+    + subitem 1
+    + subitem 2
+    
+YAML: Yet Another Markup Language
+    
+##Variable Assignment
+Lets assign a value to our first variable. 
+```{r}
+myFirstVar <- "Hello World!"
+```
+
+The name of the variable is on the left side of the assignment operator. The assignment operator is created using the shortcut `CMD + Option + I` (Ctrl + Alt + I for Windows)
+
+Nows let print/call the variable that we created
+```{r}
+myFirstVar
+```
+
+Let reassign a value to `myFirstVar`.
+```{r}
+myFirstVar <- 23
+```
+
+Create a new variable and assign it the value from the first.
+```{r}
+mySecondVar <- myFirstVar
+```
+
+
+##Create atomic vectors
+Lets create atomic vectors of different data types.
+```{r}
+chrVec <- c("Mario", "Adiam", "Hari")
+numVec <- c(1, 2, 4, 6)
+logicalVec <- c(T, F, TRUE, F)
+```
+
+Vectors can be created easily using the `c()` function which is a shortform for "combine".
+
+Lets get the type and length of the vectors we created.
+```{r}
+typeof(chrVec)
+typeof(numVec)
+typeof(logicalVec)
+```
+
+```{r}
+intVec <- c(1L, 3L, 6L, 9L)
+typeof(intVec)
+```
+Now lets get the lengths.
+```{r}
+length(chrVec)
+```
+
+
+###use a few convenience functions to create vectors
+
+`seq()`
+```{r}
+sampleSeq <- seq(from = 10, to = 30, by = 2)
+sampleSeq
+```
+
+`:`
+```{r}
+10:30
+```
+
+
+###Coercion
+The heirarchy of coercion in R is as follows: character > numeric > integer > logical
+```{r}
+c("one", 1, 1.2)
+```
+
+```{r}
+dblInt <- c(1.2, 3L, 3.4)
+typeof(dblInt)
+```
+
+```{r}
+is.numeric(dblInt)
+```
+
+```{r}
+logicalNum <- c(T, 1, F)
+
+typeof(logicalNum)
+```
+
+##Install and load packages
+
+```{r}
+
+```
+
+##Basics of the tidyverse
+
+Pipe operator `%>%`.
+
+Tibbles are data.frames ++
+
+```{r}
+library(nycflights13); library(tidyverse)
+
+flights
+```
+
+```{r}
+str(flights)
+```
+
+
+```{r}
+mtcars
+```
+
+```{r}
+str(mtcars)
+```
+
+Its easy to convert a data.frame to a tibble.
+
+```{r}
+tblMtCars <- as_tibble(mtcars)
+```
+
+
+```{r}
+str(tblMtCars)
+```
+
+##Arrange a tibble
+You can arrange a tibble using the `arrange()` verb.
+
+```{r}
+flights %>% 
+    arrange(desc(month))
+```
+
+You can save this arranged tibble to an object using the <- assignment operator.
+```{r}
+sampleSave <- flights %>% 
+    arrange(desc(month))
+```
+
+If you would like to create a new copy of flights in your global environment that is arranged, you can do that as well
+```{r}
+flights <- flights %>% 
+    arrange(desc(month))
+```
+
+The code below removes flights from your environment.
+```{r}
+rm(flights)
+```
+
+##Select columns
+Select using column positions
+```{r}
+flights %>% 
+    select(1, 2, 4)
+```
+
+You can also use the names of the columns to select them
+
+```{r}
+flights %>% 
+    select(year, month, dep_delay)
+```
+
+I can also use a range using names of columns
+```{r}
+flights %>% 
+    select(year:dep_delay)
+```
+Lets try selecting using a helper function `starts_with()`
+```{r}
+flights %>% 
+    select(starts_with("arr"))
+```
+
+
+##Mutate to add new columns
+You can add new columns to a tibble using `mutate()`
+```{r}
+flights %>% 
+    select(year, month, day) %>% 
+    mutate(newDate = paste(year, month, day, sep = "-"))
+```
+
+Lets use an `if_else()` within a mutate
+```{r}
+flights %>% 
+    select(1:3, dep_delay) %>% 
+    mutate(delayedOrNot = if_else(dep_delay > 0, 
+                                  "Flight departure was delayed", 
+                                  "Flight departed on time or early"))
+```
+
+
+
+
+```{r}
+flights
+```
+
+##Filtering rows from a tibble
+
+Lets test out a simple case.
+```{r}
+flights %>% 
+    filter(month == 12)
+```
+
+1. Equalization operator `==`
+
+```{r}
+2 == 2
+3 == 4
+```
+
+```{r}
+3 > 4
+```
+
+```{r}
+3 < 4
+```
+
+```{r}
+2 != 2
+```
+
+```{r}
+4 < 4
+4 <= 4
+```
+
+```{r}
+numVect <- 20:60
+numVect < 30
+```
+
+Filtering using multiple conditions
+
+```{r}
+flights %>% 
+    filter(month == 12 & distance > 1500) %>% 
+    select(1:3, distance)
+```
+
+Lets try using an or condition to filter rows
+```{r}
+flights %>% 
+    filter(month == 12 | month == 1) %>% 
+    head()
+```
+
+Lets find 10th longest flight by distance in the year 2013
+```{r}
+flights %>% 
+    filter(dense_rank(desc(distance)) == 10) %>% 
+    select(1:3, distance)
+```
+
+I want pull out the flights that are ranked 10th to 20th in terms of distance
+
+```{r}
+flights %>% 
+    mutate(distanceRank = dense_rank(desc(distance))) %>% 
+    filter(distanceRank %in% 10:20) %>% 
+    select(1:3, distance, distanceRank)
+```
+
+
+
+```{r}
+namesOfParticipants <- c("Diana", "Mario", "Erika", "Marc", "Adiam")
+
+namesOfParticipants %in% c("Mario", "Marc")
+```
+
+
+```{r}
+numVect %in% 20:35
+```
+
+
+```{r}
+numVect < 36
+```
+
+##Grouping
+Lets look at a simple grouping
+```{r}
+flights %>% 
+    group_by(origin) %>% 
+    summarise(avgFlightDistance = mean(distance, na.rm = T))
+```
+lets try grouping with two groups
+```{r}
+flights %>% 
+    group_by(month, origin) %>% 
+    summarise(avgFlightDistance = mean(distance, na.rm = T))
+```
+
+mutate, and filter with grouping
+```{r}
+flights %>% 
+    group_by(carrier) %>% 
+    mutate(meanDelay = mean(dep_delay, na.rm = T), 
+           comparativeDelay = dep_delay - meanDelay) %>% 
+    select(carrier, dep_delay, meanDelay, comparativeDelay)
+```
+
+filter with grouping
+```{r}
+flights %>% 
+    group_by(origin) %>% 
+    mutate(maxDelay = max(dep_delay, na.rm = T)) %>% 
+    filter(dep_delay == maxDelay) %>% 
+    select(1:3, origin, maxDelay, dep_delay)
+```
+

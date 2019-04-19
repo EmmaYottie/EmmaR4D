@@ -1,0 +1,140 @@
+---
+title: "Class 7 - Lecture"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+css: /Users/hsubhash/Documents/R4D/Assets/custom.css
+---
+
+**LEARNING OBJECTIVES**: Make beautiful ggplot charts using default features and extensions.
+
+**TOPICS**
+
+0. Housekeeping
+    + Thoughts on the class prep
+    + Asking questions
+2. Facets and groups
+3. Make beautiful charts using
+    + Aesthetics (alpha, colour etc.)
+    + Scales
+    + Theme
+    + Labels and annotations
+4. Save a plot
+5. Discuss extensions and helpers
+    + [ggthemes](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/)
+    + [gganimate](https://gganimate.com/)
+    + [ggforce](https://www.data-imaginist.com/2019/the-ggforce-awakens-again/)
+    + [ggrepel](https://github.com/slowkow/ggrepel)
+    + [scales](https://scales.r-lib.org/)
+    + [Many more](https://www.ggplot2-exts.org/gallery/)
+    
+    
+2. Facets and groups
+```{r}
+flights %>% 
+    group_by(origin, hour) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T)) 
+```
+
+```{r}
+flights %>% 
+    filter(hour %in% 1:4)
+```
+
+```{r}
+mean(NA, na.rm = T)
+```
+```{r}
+sum(NA, na.rm = T)
+```
+
+
+```{r}
+library(nycflights13); library(tidyverse)
+
+flights %>% 
+    group_by(origin, hour) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T)) %>% 
+    ggplot(mapping = aes(x = hour, y = meanDelay, colour = origin)) +
+    geom_line(na.rm = T) +
+    geom_point(na.rm = T)
+```
+
+Lets truncate this axis so that it doesn't show hours before 5. One way to do this is to filter the data.
+```{r}
+flights %>% 
+    group_by(origin, hour) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T)) %>% 
+    ungroup() %>% 
+    filter(hour != 1) %>% 
+    ggplot(mapping = aes(x = hour, y = meanDelay, colour = origin)) +
+    geom_line(na.rm = T) +
+    geom_point(na.rm = T)
+```
+
+Another way to do it is to explicitly set the scales.
+```{r}
+flights %>% 
+    group_by(origin, hour) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T)) %>% 
+    ggplot(mapping = aes(x = hour, y = meanDelay, colour = origin)) +
+    geom_line(na.rm = T) +
+    geom_point(na.rm = T) +
+    scale_x_continuous(limits = c(5, 24))
+```
+
+Lets now add a theme from the ggthemes package. I have also set the max value so that is dynamic.
+```{r}
+library(ggthemes)
+plotData <- flights %>% 
+    group_by(origin, hour) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T)) %>% 
+    ungroup()
+
+ggplot(data = plotData, mapping = aes(x = hour, y = meanDelay, colour = origin)) +
+    geom_line(na.rm = T) +
+    geom_point(na.rm = T) +
+    scale_x_continuous(limits = c(5, max(plotData$hour, na.rm = T))) +
+    theme_fivethirtyeight()
+
+```
+
+Fivethirtyeight removes the axis titles. Lets add those back.
+
+```{r}
+ggplot(data = plotData, mapping = aes(x = hour, y = meanDelay, colour = origin)) +
+    geom_line(na.rm = T) +
+    geom_point(na.rm = T) +
+    scale_x_continuous(limits = c(5, max(plotData$hour, na.rm = T))) +
+    theme_fivethirtyeight() +
+    theme(
+        axis.title = element_text()
+    )
+```
+Lets add some titles, titles, titles
+```{r}
+ggplot(data = plotData, mapping = aes(x = hour, y = meanDelay, colour = origin)) +
+    geom_line(na.rm = T) +
+    geom_point(na.rm = T) +
+    scale_x_continuous(limits = c(5, max(plotData$hour, na.rm = T))) +
+    labs(x = "Hour of departure",
+         y = "Mean departure delay",
+         title = "Don't fly late") +
+    theme_fivethirtyeight() +
+    theme(
+        axis.title = element_text()
+    )
+
+ggsave("testPlot.png")
+```
+
+```{r}
+
+```
+

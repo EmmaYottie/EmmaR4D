@@ -1,0 +1,46 @@
+---
+title: "Class 2 - In class exercises"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+**INSTRUCTIONS**:
+
+1. Give your answers below each numbered task. Enter a new line.
+2. The tasks are clustered under level 2 headers (`##`). Do one set at a time.
+3. Preview your notebook at the end of each in class exercise task set. Does the notebook look formatted correctly? If not fix it. In most cases the issue is
+
+**KEYBOARD SHORTCUTS**:
+
+1) Assignment operator (<-) is `Alt+-` for Windows and `Option+-` for Mac
+2) Insert new code chunk `Ctrl+Alt+I` for Windows and `Command+Option+I` for Mac
+3) Run a line of code `Ctrl+Enter` for Windows and `Command+Enter` for Mac
+4) Run all the code within a chunk `Ctrl+Shift+Enter` for Windows and `Command+Shift+Enter` for Mac
+5) Insert a pipe operator (%>%) `Ctrl+Shift+M` for Windows and `Command+Shift+M` for Mac
+
+##Variable assignment
+
+1. Create the folder structure for the class on your computer called "yourfirstnameR4D" with the following subfolders in it - "Assignments", "Classes" and "Data". This will be your folder for the entire course.
+2. Create an R notebook change its YAML title to "Class 1 Exercises"
+3. Create a level 2 header called "My first exercise"
+4. Create your first code chunk (remember to use the shortcuts)  
+5. Within it assign any value you would like to a variable. Print this value. Save the file in the "Classes" subfolder
+6. Preview the notebook. 
+7. Use this notebook to take in class notes, try out things and complete in class tasks.
+
+##Data types and structures
+1. Create and store a character vector (of your choice), a numeric vector (interger/double) and a factor, all of the same length
+2. Use `seq()` to generate an atomic vector containing all the odd numbers less than 100
+3. Store all the vectors created in step 1 in a named list
+4. Create a dataframe using all the vectors stored in step 1
+5. Predict the output of the following without running the code in 
+    + `c("FALSE", FALSE, T, F, T, T, T)` = "Character", 
+    + `c(1.0, FALSE)` = "numeric", 
+    + `c(2, TRUE)`  = "numeric"and 
+    + `c("two", 2)` = "character"

@@ -1,0 +1,171 @@
+---
+title: "Class 4 - Lecture"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+css: /Users/hsubhash/Documents/R4D/Assets/custom.css
+---
+
+##Learning Objectives
+1. ~~Recap and learn the importance of ungrouping~~
+2. ~~Create and understand factor variables~~
+3. ~~Understand the need for visualizing data (without summarizing it) before analyzing it.~~
+4. ~~Create simple charts using the layered grammer of graphics~~
+    + ~~A barplot~~
+    + ~~A histogram~~
+    + ~~A column chart~~
+    + A line chart
+    + A scatter plot
+
+
+
+##Recap
+
+The different dplyr verbs
+
+1. arrange
+2. filter
+3. mutate
+4. summarise
+5. select
+6. slice
+7. group_by
+6. pull
+
+Lets select, filter, mutate, arrange in a single piped code chunk
+```{r, message=FALSE}
+library(tidyverse); library(nycflights13); library(here)
+
+flights %>% 
+    select(1:3, contains("delay"), carrier, 7) %>% 
+    filter(arr_time < 1200) %>% 
+    mutate(newDate = paste(year, month, day, sep = "-")) %>% 
+    arrange(desc(month))
+    
+```
+
+Lets look at grouping and summarise
+```{r}
+flights %>% 
+    group_by(month) %>% 
+    summarise(meanArrDelay = mean(arr_delay, na.rm = T))
+```
+
+Anytime you group a tibble it is important to ungroup it to prevent unintended consequences.
+```{r}
+aGrpFlight <- flights %>% 
+    group_by(origin)
+
+glimpse(aGrpFlight)
+```
+
+For instance, if I am interested in finding the the flight that was most delayed in 2013, running the filter command on a grouped by origin tibble will yield three rows instead of the expected one. 
+```{r}
+aGrpFlight %>% 
+    filter(dep_delay == max(dep_delay, na.rm = T)) %>% 
+    ungroup()
+```
+
+```{r}
+flights %>% 
+    filter(dep_delay == max(dep_delay, na.rm = T))
+```
+
+##Lets factor
+Factor variables are the way in which R handles categorical variables. The `sample()` function is useful to create a new vector that randomly picks from an input vector. Lets use it to create a atomic vector that codes gender. See its implementation below.
+```{r}
+genderVar <- sample(x = c("M", "F", "Other"), size = 20,  replace = T)
+
+table(genderVar)
+```
+
+The vector is printed below.
+```{r}
+genderVar
+```
+
+```{r}
+fctGender <- factor(genderVar)
+
+str(fctGender)
+```
+The `table()` function counts the number of occurences of each value within a vector (or combinations of vectors). Its a quick way to get a sense for the values within a particular data structure.
+```{r}
+table(fctGender)
+```
+
+DON'T DO THIS! This is a mistake. Don't run this code.
+```{r}
+levels(fctGender) <- c("Other", "F", "M")
+```
+The levels function does not reorder as expected, it simply renames the levels. Confusingly similar to what the labels argument does within the factor function. As you notice, the assigning values using this simply swaps the labels around i.e. (F changed to Other, M to F and, Other to M)
+
+```{r}
+table(fctGender)
+```
+
+Instead always use the `factor()` command to set the order of the levels explicitly using the `levels` argument below.
+```{r}
+fctGenderFinal <- factor(genderVar, levels = c("Other", "F", "M"), labels = c("Other", "Female", "Male"))
+```
+The output of this is ordered and labelled differently but matches what we see in the beginning.
+```{r}
+table(fctGenderFinal)
+```
+
+
+```{r}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/e/ec/Anscombe%27s_quartet_3.svg")
+```
+
+
+```{r}
+knitr::include_graphics(here("Assets", "anscombeSummary.png"))
+```
+
+##Lets make some plots
+
+Start with a basic histogram.
+```{r}
+flights %>% 
+    filter(dep_delay < 250) %>% 
+    ggplot(data = ., mapping = aes(dep_delay)) +
+    geom_histogram()
+```
+If I was coding regularly
+```{r}
+flights %>% 
+    filter(dep_delay < 250) %>% 
+    ggplot(aes(dep_delay)) +
+    geom_histogram(bins = 150)
+```
+
+
+Lets look at a bar plot
+```{r}
+ggplot(data = flights, mapping = aes(carrier)) +
+    geom_bar()
+```
+
+Lets make a column chart (regular world bar chart)
+```{r}
+flights %>% 
+    group_by(carrier) %>% 
+    summarise(meanDelay = mean(dep_delay, na.rm = T)) %>% 
+    ggplot(aes(x = carrier, y = meanDelay)) +
+    geom_col()
+```
+
+
+
+
+
+
+
+

@@ -1,0 +1,91 @@
+---
+title: "Make up class 1 - Exercises"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+**INSTRUCTIONS**:
+
+1. Give your answers below each numbered task. Enter a new line.
+2. The tasks are clustered under level 2 headers (`##`). Do one set at a time.
+3. Preview your notebook at the end of each in class exercise task set. Does the notebook look formatted correctly? If not fix it.
+
+**KEYBOARD SHORTCUTS**:
+
+1) Assignment operator (<-) is `Alt+-` for Windows and `Option+-` for Mac
+2) Insert new code chunk `Ctrl+Alt+I` for Windows and `Command+Option+I` for Mac
+3) Run a line of code `Ctrl+Enter` for Windows and `Command+Enter` for Mac
+4) Run all the code within a chunk `Ctrl+Shift+Enter` for Windows and `Command+Shift+Enter` for Mac
+5) Insert a pipe operator (%>%) `Ctrl+Shift+M` for Windows and `Command+Shift+M` for Mac
+
+##Task set 1: Create your folder structure
+1. Create the folder structure for the class on your computer called "yourfirstnameR4D" with the following subfolders in it - "Assignments", "Classes" and "Data". This will be your folder for the entire course.
+2. Download and save the Rmd file using the drop down at the top right of this notebook in a subfolder called "Makeup Class1" in the "Classes" folder.
+3. Create your first code chunk (remember to use the shortcuts) under this line
+5. Within it assign any value you would like to a variable. Print this value. Save the file in the "Classes" subfolder
+6. Click on the preview button to see the notebook. 
+7. Add a level two heading using `##` under this line with a short two sentence paragraph under it explaining what R markdown is.
+8. Change the author in the YAML section to your name.
+9. Hit preview again to see the differences from the first time.
+
+##Task set 2: Data structures and types
+1. Create and store a character vector (of your choice), a numeric vector (interger/double) and a factor, all of the same length
+2. Get the type (using `typeof()`), and the length (using `length()`) of the vectors you created in 1.
+3. Create a list containing all the vectors you created in 1, using `list()`.
+4. Try combining using `c()` instead of `list()`. Can you explain why the output from the two commands are different?
+5. Create a dataframe using all the vectors stored in step 1
+6. Predict the output of the following without running the code in 
+    + `c("FALSE", FALSE, T, F, T, T, T)` = "Character", 
+    + `c(1.0, FALSE)` = "numeric", 
+    + `c(2, TRUE)`  = "numeric"and 
+    + `c("two", 2)` = "character"
+    
+##Task set 3: Package, arrange, select and mutate
+1. Install and load the `nycflights13` package and the `tidyverse` package
+2. Arrange the flights data from the NY in descending order of dates (the last day of the year should be the first row of the data).
+3. Use the documentation for `select()` on the tidyverse portal to find a way to create a new tibble that contains the first three columns (year, month, day) and all other columns whose names `contains()` the term "delay"
+4. Create a column that indicates whether a flight took off in the AM or the PM, using `if_else()`. Make sure to have the help file for `if_else()` open when you do this.
+
+##Task set 4: Filter
+1. Filter the flights data to only show the flights in the month of December
+```{r}
+flights %>% 
+    filter(month == 12)
+```
+
+2. Filter all the flights with departure that were delayed by more than 2 hours in the month of December
+```{r}
+flights %>% 
+    filter(month == 12 & dep_delay > 120)
+```
+
+3. Show all the rows for which `arr_delay` is missing (`NA`).
+```{r}
+flights %>% 
+    filter(is.na(arr_delay))
+```
+
+4. Filter the flights that were between the 10th and 40th most delayed in terms of arrival (`arr_delay`) using the `dense_rank()` helper function.
+```{r}
+flights %>% 
+    mutate(arrDelayRank = dense_rank(desc(arr_delay))) %>% 
+    select(1:3, arr_delay, arrDelayRank) %>% 
+    arrange(desc(arr_delay)) %>% 
+    filter(arrDelayRank %in% 10:40)
+```
+
+##Task set 5: Grouping
+1. Use `group_by()` and `summarise()` to find the average arrival delay to different destinations (`dest`).
+2. Create a new variable in the flights data that is difference between the departure delay for each flight and the monthly average delay.
+3. Use `group_by()` and `filter()` to identify the flights that had the highest delay for every month in 2013.
+
+
+
+
+

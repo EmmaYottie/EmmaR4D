@@ -1,0 +1,67 @@
+---
+title: "Class 3 - In class exercises"
+author: Hari Subhash
+date: "Date created: `r Sys.Date()`"
+output:
+  html_notebook:
+    highlight: kate
+    smart: yes
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+**INSTRUCTIONS**:
+
+1. Give your answers below each numbered task. Enter a new line.
+2. The tasks are clustered under level 2 headers (`##`). Do one set at a time.
+3. Preview your notebook at the end of each in class exercise task set. Does the notebook look formatted correctly? If not fix it.
+
+**KEYBOARD SHORTCUTS**:
+
+1) Assignment operator (<-) is `Alt+-` for Windows and `Option+-` for Mac
+2) Insert new code chunk `Ctrl+Alt+I` for Windows and `Command+Option+I` for Mac
+3) Run a line of code `Ctrl+Enter` for Windows and `Command+Enter` for Mac
+4) Run all the code within a chunk `Ctrl+Shift+Enter` for Windows and `Command+Shift+Enter` for Mac
+5) Insert a pipe operator (%>%) `Ctrl+Shift+M` for Windows and `Command+Shift+M` for Mac
+
+#Class 3 Tasks
+##Filter rows (Task time 15 mins)
+1. Select the first three columns (year, month, day), all other columns whose names `contains()` the term "dep" and the origin column. Filter this data to show all the flights that took off in the morning (before 12:00) from JFK in December. Make sure to use pipes between the select and filter command. Refer to the shortcut for inserting a pipe (see above).
+```{r}
+flights %>% 
+    select(1:3, contains("dep"), origin) %>%
+    filter(dep_time < 1200 & origin == "JFK" & month == 12)
+```
+2. Use `top_n()` to print the most delayed departures from NYC in 2013. Read the documentation for `top_n()` on tidyverse if you are confused.
+```{r}
+flights %>% 
+    top_n(., n = 5, wt = dep_delay)
+```
+
+3. Run the code below, read the error and fix the code so that it works
+```{r}
+flights %>% 
+    filter(month == 6 & day > 15)
+```
+5. Filter the flights that were between the 10th and 40th most delayed in terms of arrival (`arr_delay`) using the `dense_rank()` helper function.
+```{r}
+flights %>% 
+    filter(dense_rank(desc(arr_delay)) %in% 10:40)
+```
+
+
+##Mutate a tibble (Task time 10 mins)
+1. Create a variable that indicates whether a flight took off in the AM or the PM.
+2. Use `transmute()` instead of `mutate()` to do the same. What is the difference between the two?
+
+##Grouped operations (Task time 30 mins)
+1. Find the top 10 airline carrier that had the highest average departure delays in 2013 using `group_by()`, `summarise()` and other functions you have learnt previously.
+2. Use `group_by()` with `mutate()` to create a new variable called `comparativeDelay` which is the difference between departure delay and the average delay in each origin airport for every hour in 2013 (checkout the `time_hour` variable in the flights data). Store the result in a variable called `comparativeDelays`.
+3. Now group the `comparativeDelays` tibble by carriers to print the top 10 airlines with the greatest average comparative delays.
+4. Use `group_by()` with filter to print the 5 most delayed flights from each origin. Your printed tibble should have 15 rows.
+5. The air authority in NY wants to penalize carriers for departure delays. Which of the three metrics (task 1, 3 or 4) would you recommend they use to identify the airlines to penalize. Why?
+
+##ggplot
+1. Make a scatterplot of your choice using any two numeric variables from the flights dataset
+
+

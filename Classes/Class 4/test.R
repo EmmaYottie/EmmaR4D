@@ -1,0 +1,3 @@
+getwd()
+library(here)
+here()
